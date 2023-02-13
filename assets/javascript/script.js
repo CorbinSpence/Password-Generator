@@ -33,19 +33,24 @@ var numbers = false
 var special = false
 
 
+function isValidMin(min){
+  return typeof !(min !== "number" || min<8 || min>128)
+}
+function isValidMax(min, max){
+  return typeof !(max !== "number" || max<min || max>128)
+}
 function promptLength(){
   var processLength = confirm("Add password length criteria");
   if(processLength){
     while(true){
       var getMin = parseInt(prompt("Type the minimum length for the password"))
-      console.log(typeof getMin)
-      if(typeof getMin !== "number" || getMin<0){
-        let errorMessage = alert("Please define minimum as positive integers.")
+      if(!isValidMin(getMin)){
+        let errorMessage = alert("Please define minimum as positive integers greater than 8.")
         continue
       }
       var getMax = parseInt(prompt("Type the maximum length for the password"))
-      if(typeof getMax !== "number" || getMax<getMin){
-        let errorMessage = alert("Maximum needs to be an integer greater than or equal to the minimum")
+      if(!isValidMax(getMin, getMax)){
+        let errorMessage = alert("Maximum needs to be at least equal to minimum and less than 128")
         continue
       }
       minLength = getMin
@@ -90,6 +95,28 @@ function generateIndexes(length){
   lengthQuarters[2] = Math.round(Math.random()*(quarter-1)+(quarter*2))
   lengthQuarters[3] = Math.round(Math.random()*(quarter-1+(length%4))+(quarter*3))
   return lengthQuarters
+}
+function generateRandChar(){
+  let options = [];
+
+  if(lowercase){
+    options.push(String.fromCharCode(Math.round(Math.random()*25)+97))
+  }
+  if(uppercase){
+    options.push(String.fromCharCode(Math.round(Math.random()*25)+65))
+  }
+  if(numbers){
+    options.push(String.fromCharCode(Math.round(Math.random()*9)+48))
+  }
+  if(special){
+    options.push(specialCharacters[Math.round(Math.random()*31)])
+  }
+
+  if(options.length===0){
+    return String.fromCharCode(Math.round(Math.random()*93)+33)
+  }else{
+    return options[Math.round(Math.random()*(options.length-1))]
+  }
 }
 /*
   Structure:
@@ -154,7 +181,7 @@ function generatePassword(){
       password+=addedChar
       console.log("Inserted special character: "+addedChar+" at index "+i)
     }else{
-      password+=String.fromCharCode(Math.round(Math.random()*93)+33)
+      password+=generateRandChar()
     }
   }
   console.log(password) //Print password
