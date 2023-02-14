@@ -34,23 +34,31 @@ var special = false
 
 
 function isValidMin(min){
-  return typeof !(min !== "number" || min<8 || min>128)
+  if(isNaN(min)){
+    return false
+  }
+  return !(typeof min !== "number" || min<8 || min>128)
 }
 function isValidMax(min, max){
-  return typeof !(max !== "number" || max<min || max>128)
+  console.log(min)
+  console.log(max)
+  if(isNaN(max)){
+    return false
+  }
+  return !(typeof max !== "number" || max<min || max>128)
 }
 function promptLength(){
-  var processLength = confirm("Add password length criteria");
+  var processLength = confirm("Add password length criteria?");
   if(processLength){
     while(true){
       var getMin = parseInt(prompt("Type the minimum length for the password"))
       if(!isValidMin(getMin)){
-        let errorMessage = alert("Please define minimum as positive integers greater than 8.")
+        let errorMessage = alert("Please define minimum as positive integers greater than 8 and less than 129.")
         continue
       }
       var getMax = parseInt(prompt("Type the maximum length for the password"))
       if(!isValidMax(getMin, getMax)){
-        let errorMessage = alert("Maximum needs to be at least equal to minimum and less than 128")
+        let errorMessage = alert("Maximum needs to be at least equal to minimum and less than 129.")
         continue
       }
       minLength = getMin
@@ -60,14 +68,14 @@ function promptLength(){
   }
 }
 function promptChars(){
-  var processChars = confirm("Add password character criteria");
+  var processChars = confirm("Add password character criteria?");
   if(processChars){
     let selectedOption = false
     while(!selectedOption){
-      lowercase = confirm("Character criteria: include lowercase");
-      uppercase = confirm("Character criteria: include uppercase");
-      numbers = confirm("Character criteria: include numbers");
-      special = confirm("Character criteria: include special characters");
+      lowercase = confirm("Character criteria: include lowercase?");
+      uppercase = confirm("Character criteria: include uppercase?");
+      numbers = confirm("Character criteria: include numbers?");
+      special = confirm("Character criteria: include special characters?");
       if(lowercase || uppercase || numbers|| special){
         selectedOption = true
       }else{
