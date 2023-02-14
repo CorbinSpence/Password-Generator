@@ -32,21 +32,28 @@ var uppercase = false
 var numbers = false
 var special = false
 
-
+/* 
+Returns true if user submitted length min is valid
+*/
 function isValidMin(min){
   if(isNaN(min)){
     return false
   }
   return !(typeof min !== "number" || min<8 || min>128)
 }
+/* 
+Returns true if user submitted length max is valid
+*/
 function isValidMax(min, max){
-  console.log(min)
-  console.log(max)
   if(isNaN(max)){
     return false
   }
   return !(typeof max !== "number" || max<min || max>128)
 }
+/* 
+Prompts user for length criteria
+Min and max are left at default if user doesn't choose to add criteria
+*/
 function promptLength(){
   var processLength = confirm("Add password length criteria?");
   if(processLength){
@@ -67,6 +74,10 @@ function promptLength(){
     }
   }
 }
+/* 
+Prompts user for char criteria
+Defaults to using all chars if user chooses to do nothing
+*/
 function promptChars(){
   var processChars = confirm("Add password character criteria?");
   if(processChars){
@@ -84,7 +95,9 @@ function promptChars(){
     }
   }
 }
-
+/* 
+Resets determining variables
+*/
 function resetDefaults(){
   lowercase = false
   uppercase = false
@@ -94,7 +107,9 @@ function resetDefaults(){
   minLength = 10
   maxLength = 20
 }
-
+/* 
+Genarates random slots for each type of char to inhabit
+*/
 function generateIndexes(length){
   let quarter = (length-(length%4))/4;
   let lengthQuarters = [];
@@ -104,6 +119,9 @@ function generateIndexes(length){
   lengthQuarters[3] = Math.round(Math.random()*(quarter-1+(length%4))+(quarter*3))
   return lengthQuarters
 }
+/* 
+Returns random char based on allowed chars
+*/
 function generateRandChar(){
   let options = [];
 
@@ -127,9 +145,7 @@ function generateRandChar(){
   }
 }
 /*
-  Structure:
-    -password length is generated
-    -insert upper, lower, num, and spec are assigned index values based on forths of the string
+  Generates password to display
 */
 function generatePassword(){
   promptLength()
@@ -137,62 +153,43 @@ function generatePassword(){
 
   let password = ""
   let passwordLength = Math.round(Math.random()*(maxLength-minLength))+minLength
-  console.log("Length is: "+passwordLength)
 
-  /*
-  This array contains randomly generated indexes of the password
-  These indexes are pulled from quarters of the string to avoid generating duplicate indexes
-  */
   let lengthQuarters = generateIndexes(passwordLength)
 
-  /*
-  If the user chooses to add a char restrictions, values from array are pushed to variables
-  The array value is removed from the array each time it is pushed to a variable. This ensures each variable has a unique value
-  */
+  //alots choosen char types at least one slot in the password
   let randomizedIndex = lengthQuarters[Math.floor(Math.random()*3)]
   var insertLower = lowercase? randomizedIndex:-1
   lengthQuarters.splice(lengthQuarters.indexOf(randomizedIndex), 1)
-  console.log("Lower index is "+insertLower)
 
   randomizedIndex = lengthQuarters[Math.floor(Math.random()*2)]
   var insertUpper = uppercase? randomizedIndex:-1
   lengthQuarters.splice(lengthQuarters.indexOf(randomizedIndex), 1)
-  console.log("Upper index is "+insertUpper)
 
   randomizedIndex = lengthQuarters[Math.floor(Math.random()*1)]
   var insertNum = numbers? randomizedIndex:-1
   lengthQuarters.splice(lengthQuarters.indexOf(randomizedIndex), 1)
-  console.log("Number index is "+insertNum)
 
   randomizedIndex = lengthQuarters[0]
   var insertSpec = special? randomizedIndex:-1
-  console.log("Special index is "+insertSpec)
 
-  /*
-  Inserts chars based on parameters
-  */
+  //Inserts chars based on parameters
   for(let i=0; i<passwordLength; i++){
     if(insertLower===i){
       let addedChar = String.fromCharCode(Math.round(Math.random()*25)+97)
       password+=addedChar
-      console.log("Inserted lowercase: "+addedChar+" at index "+i)
     }else if(insertUpper===i){
       let addedChar = String.fromCharCode(Math.round(Math.random()*25)+65)
       password+=addedChar
-      console.log("Inserted uppercase: "+addedChar+" at index "+i)
     }else if(insertNum===i){
       let addedChar = String.fromCharCode(Math.round(Math.random()*9)+48)
       password+=addedChar
-      console.log("Inserted number: "+addedChar+" at index "+i)
     }else if(insertSpec===i){
       let addedChar = specialCharacters[Math.round(Math.random()*31)]
       password+=addedChar
-      console.log("Inserted special character: "+addedChar+" at index "+i)
     }else{
       password+=generateRandChar()
     }
   }
-  console.log(password) //Print password
 
   resetDefaults()
 
